@@ -54,11 +54,11 @@ tce_time0bk =[]
 # hack to find length of this file
 pdrecord = pdtfr.tfrecords_to_pandas('/home/vikram/ml_tutorials/tfrecord/train-00002-of-00008', schema ={'kepid':int, 'tce_period': float})
 
-for i in range(5):#len(pdrecord)):
+for i in range(len(pdrecord)):
     result = get_example(raw_dataset=raw_dataset, take_val= i+1)
     print(i)
     av_pred_class.append(str(result['av_pred_class'][0], 'utf-8'))
-    av_training_set.append(result['av_training_set'][0])
+    av_training_set.append(str(result['av_training_set'][0], 'utf-8'))
     global_view.append(result['global_view'])
     kepid.append(result['kepid'][0])
     local_view.append(result['local_view'])
@@ -74,4 +74,9 @@ for i in range(5):#len(pdrecord)):
     tce_time0bk.append(result['tce_time0bk'][0])
 
 
-
+data = tab.Table([kepid, av_pred_class, local_view, global_view, av_training_set, tce_depth, tce_duration, tce_impact,
+                  tce_period, tce_max_mult_ev, tce_model_snr, tce_plnt_num, tce_time0bk, spline_bkspace],
+                 names = ('id', 'class', 'local', 'global', 'av_training_set', 'depth', 'duration', 'impact', 'period',
+                          'max_mult_ev', 'model_snr', 'plnt_num', 'time0bk', 'spline_bkspace'))
+save_file = filename + '.fits'
+data.write(save_file, overwrite = True)
